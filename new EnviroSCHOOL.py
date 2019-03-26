@@ -6,10 +6,11 @@ score = 0
 tries = 0
 x = 0
 y = 0
+totalTries = 0
 questionList = []
 optionBoxList = []
 
-app = gui("Environment Quiz","1200x400") 
+app = gui("Environment Quiz","500x400") 
 
 class Question:
     def __init__(self,quesText,cans,pans1,pans2,pans3):
@@ -44,6 +45,11 @@ class Options:
         return self.opAns
     
 #main routine
+
+"""def setResultLabel():
+    gloabl 
+    app.setLabel("Display","Congratulations!\nYou finished the quiz with a score of {}".format(score))"""
+
 def launch(win):
     if win == "Start":
         app.showSubWindow("questions")
@@ -52,13 +58,17 @@ def launch(win):
     elif win == "Exit":
         app.stop()
 
-def showResults(button):
-    global score, tries, x, y
-    app.setLabel("Display","Congratulations!\nYou finished the quiz with a score of {}".format(score))
+def showResults():
+    global score, totalTries, x, y
+    app.setLabel("Display","                 Congratulations!\nYou finished the quiz with a score of {}\nYou clicked the wrong answer {} times".format(score, totalTries))
     x = 0
     y = 0
     score = 0
     tries = 0
+    totalTries = 0
+    finishButton()
+    
+def finishButton(button):
     if button == "Restart Quiz":
         app.hideSubWindow("finish")
     elif button == "Close Program":
@@ -67,8 +77,6 @@ def showResults(button):
 
 def refreshQ():
     global score, tries, x, y
-    print(score)
-    print(tries)
     if x == 4:
         app.hideSubWindow("questions")
         app.showSubWindow("finish")
@@ -82,7 +90,7 @@ def getAnswer():
     
     
 def check(button):
-    global x, y, score, tries
+    global x, y, score, tries, totalTries
     if button == "Enter Answer":
         while questionList[x].correctOrNot(getAnswer()) == True:
             x = x + 1
@@ -91,12 +99,15 @@ def check(button):
                 score = score + 4
                 tries = 0
             elif tries == 1:
+                totalTries = totalTries + tries
                 score = score + 3
                 tries = 0
             elif tries == 2:
+                totalTries = totalTries + tries
                 score = score + 2
                 tries = 0
             elif tries == 3:
+                totalTries = totalTries + tries
                 score = score + 1
                 tries = 0
             refreshQ()
@@ -119,8 +130,9 @@ app.addButtons(["Start", "Exit"],launch)
 #CREATING SUB WINDOW FOR QUESTIONS
 app.startSubWindow("questions", modal=True)
 app.setBg("light green")
-app.setSize(870,400)
+app.setSize(700,400)
 app.addLabel("Questions", "")
+
 app.addLabel("wrongOrRight", "")
 app.addLabelOptionBox("Your Answer:","")
 app.setOptionBoxWidths("Your Answer:",50)
