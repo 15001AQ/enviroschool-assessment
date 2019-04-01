@@ -11,7 +11,6 @@ totalTries = 0
 x = 0
 #"y" is the option box answers number. 0 is the first option box answers number.
 y = 0
-counter = 3
 
 #my lists
 questionList = []
@@ -98,7 +97,7 @@ def showResults():
 def finishButton(button):
     #pressing the "Restart Quiz" button will close the finishing window and go back to the menu
     if button == "Restart Quiz":
-        app.setLabel("wrongOrRight", "")
+        app.setLabel("wrongOrRight", "-----")
         app.hideSubWindow("finish")
         app.show()
     #pressing the "Close Program" button will close the whole program
@@ -110,7 +109,7 @@ def finishButton(button):
 def refreshQ():
     global score, tries, x, y
     #there is no question number 4, so if x equals 4, the question window will close and the finish window will open
-    if x == 4:
+    if x == 9:
         app.hideSubWindow("questions")
         app.showSubWindow("finish")
         #calling showResults function
@@ -139,12 +138,10 @@ def check(button):
     if button == "Enter Answer":
         #this while loop keeps looping until either x or y is increased, and if a score is added.
         while questionList[x].correctOrNot(getAnswer()) == True:
-            
             #adding one to the question number becuse the question just answered was correct
             x = x + 1
             #adding one to the option box number becuse the question just answered was correct
             y = y + 1
-            
             #these if statements below determine what points the user will receive
             #no wrong answers = 4 points, 1 wrong answer = 3 points, 2 wrong answers = 2 points, 3 wrong answers = 1 point, MORE THAN 3 wrong answers = no points
             #all throughout the totalTries variable is counting each try to display at the end
@@ -173,13 +170,9 @@ def check(button):
                 score = score
                 #this label tells the user they got the answer correct, but they receive no points because they had more than 3 tries
                 app.setLabel("wrongOrRight", "Correct Answer!\nBut.. you had {} tries, so you receive 0 points\nMaximum amount of tries is 3".format(tries))
-                if x == 4:
-                    app.setLabel("wrongOrRight", "Correct Answer!\nBut.. you had {} tries, so you receive 0 points\nMaximum amount of tries is 3".format(tries))
-                    if counter == 0:
-                        refreshQ()
-                    countdown()
-                                  
-                tries = 0
+                if x == 9:
+                    app.setLabel("wrongOrRight", "Correct Answer!\nBut.. you had {} tries, so you receive 0 points\nMaximum amount of tries is 3".format(tries))         
+                    tries = 0
             #calls the refreshQ function   
             refreshQ()
             break
@@ -191,13 +184,12 @@ def check(button):
             break
     elif button == "Go back":
         app.hideSubWindow("questions")
-
-def countdown():
-    global counter
-    if counter > 0:
-        counter = counter - 1
-        app.after(300, refreshQ)
-    return counter
+        x = 0
+        y = 0
+        score = 0
+        tries = 0
+        app.setLabel("wrongOrRight", "-----")
+        app.show()
 
 #*****SETTING UP THE VARIOUS WINDOWS*****
 
@@ -205,14 +197,18 @@ def countdown():
 app.addLabel("title", "Welcome to my Environment Quiz")
 app.addLabel("belowtitle", "In this quiz, you will be asked various questions\n        on the problems with our environment")
 app.addLabel("belowbelowtitle", "Press Start to begin.")
-app.setBg("light green")
+app.setBg("pale green")
+app.setLabelBg("title","spring green")
+app.setLabelBg("belowtitle", "light green")
+app.setLabelBg("belowbelowtitle","spring green")
 app.addButtons(["Start", "Exit"],launch)
 
 #CREATING SUB WINDOW FOR QUESTIONS
 app.startSubWindow("questions", modal=True)
-app.setBg("light green")
+app.setBg("pale green")
 app.setSize(450,400)
 app.addLabel("Questions", "", 0)
+app.setLabelBg("Questions", "spring green")
 app.getRow()
 app.addLabel("wrongOrRight", "-----", 1)
 app.addLabelOptionBox("Your Answer:","", row=2)
@@ -223,9 +219,10 @@ app.stopSubWindow()
 
 #CREATING SUB WINDOW FOR FINISH
 app.startSubWindow("finish", modal=True)
-app.setBg("misty rose")
+app.setBg("pale green")
 app.setSize(400,400)
 app.addLabel("Display", "")
+app.setLabelBg("Display", "spring green")
 app.addButtons(["Restart Quiz","Close Program"],finishButton)
 app.stopSubWindow()
 
@@ -236,6 +233,12 @@ questionList.append(Question("What is water pollution caused by?","sewage, oil s
 questionList.append(Question("What is causing global warming?","carbon dioxide emission","summer season","moving closer to the sun","overpopulation"))
 questionList.append(Question("What could we use to produce renewable energy?","wind turbines, solar energy","burning coal","use plastic","fossil fuels"))
 questionList.append(Question("What are the effects of climate change?","ice melting, rising temps", "more food will grow","less nasty weather","nothing bad will happen"))
+questionList.append(Question("How many acres of forest is cut down every second?","One and a half acres","Two acres","One acre","Half an acre"))
+questionList.append(Question("How much pollution is in the world?","14 billion pounds","7 billion pounds","20 billion pounds","10 billion pounds"))
+questionList.append(Question("What will happen when our ozone layer is depleted?","Many plants will die in a few days","Humans would die instantly","Everything would be on fire","Nothing will happen"))
+questionList.append(Question("What do oil spills do?","They make the water harmful to animals","They make the water slippery","Nothing happens","We lose money"))
+questionList.append(Question("Click the renewable energy:","Hydro","Coal","Gas","Oil"))
+questionList.append(Question("When have we estimated there will be no more rain forests?","In 100 years","In 250 years","In 75 yearse","In 175 years"))
 
 #These lines of code are for adding option box answers to a list. They are going straight to the Options class
 #The variable in the Option class is just "opAns", this means that the answers below are all apart of "opAns" as their own list.
@@ -243,6 +246,12 @@ optionBoxList.append(Options(["sewage, oil spills", "people swimming","people dr
 optionBoxList.append(Options(["carbon dioxide emission","summer season","moving closer to the sun","overpopulation"]))
 optionBoxList.append(Options(["wind turbines, solar energy","burning coal","use plastic","fossil fuels"]))
 optionBoxList.append(Options(["ice melting, rising temps", "more food will grow","less nasty weather","nothing bad will happen"]))
+optionBoxList.append(Options(["One and a half acres", "Two acres","One acre","Half an acre"]))
+optionBoxList.append(Options(["14 billion pounds", "7 billion pounds","20 billion pounds","10 billion pounds"]))
+optionBoxList.append(Options(["Many plants will die in a few days", "Humans would die instantly","Everything would be on fire","Nothing will happen"]))
+optionBoxList.append(Options(["They make the water harmful to animals", "They make water slippery","Nothing happens","We lose money"]))
+optionBoxList.append(Options(["Hydro", "Coal","Gas","Oil"]))
+optionBoxList.append(Options(["In 100 years", "In 250 years","In 75 years","In 175 years"]))
 
 #this starts the gui after the program has read all the code
 app.go()
